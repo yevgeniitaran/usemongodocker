@@ -1,13 +1,13 @@
 package com.yeta.mongo.test;
 
 import com.yeta.mongo.data.jpa.SampleDataRestApplication;
-import com.yeta.mongo.data.jpa.controller.TenantGenerator;
-import com.yeta.mongo.data.jpa.domain.Employee;
-import com.yeta.mongo.data.jpa.service.EmployeeRepository;
+import com.yeta.mongo.data.jpa.controller.CollectionsConfiguration;
+import com.yeta.mongo.data.jpa.domain.HistoryRecord;
+import com.yeta.mongo.data.jpa.service.HistoryRecordRepository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,45 +19,23 @@ import java.util.List;
 public class ApplicationTests {
 
     @Autowired
-    private EmployeeRepository repo;
+    private HistoryRecordRepository repo;
 
     @Autowired
     private MongoTemplate template;
 
     @Test
     public void contextLoads() {
-
-        // Set the collection with ABC
-        TenantGenerator.tenant = "ABC";
-
-        Employee e = new Employee();
-        e.setFullName("test1");
-
-        repo.save(e);
-
-        Employee ee = new Employee();
-        ee.setFullName("test2");
-
-        repo.save(ee);
-
-
-
-        List<Employee> findAll = repo.findAll();
-        System.out.println(findAll.size());
-
-        Employee eee = new Employee();
-        e.setFullName("test");
-
-        template.save(eee,"customercoll");
-
-        System.out.println(repo.someMethod("test"));
-
-        //Set collection name with XYZ
-        TenantGenerator.tenant = "XYZ";
-
-        System.out.println(repo.someMethod("test")); // PROBLEM  this should try to get from XYZ. But instead tries to fetch from ABC itself
-        System.out.println(repo.findAll());
-
+        CollectionsConfiguration.setCollection("try_test");
+        repo.deleteAll();
+        List<HistoryRecord> historyRecords = repo.findByName("test");
+        Assert.assertEquals(historyRecords.size(), 0);
+        HistoryRecord historyRecord = new HistoryRecord();
+        historyRecord.setName("test");
+        repo.save(historyRecord);
+        historyRecords = repo.findByName("test");
+        Assert.assertEquals(historyRecords.size(), 1);
+        repo.deleteAll();
     }
 
 }
