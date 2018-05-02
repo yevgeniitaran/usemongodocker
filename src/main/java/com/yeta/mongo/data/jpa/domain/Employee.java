@@ -3,7 +3,7 @@ package com.yeta.mongo.data.jpa.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "employees")
+@Document(collection = "#{T(com.yeta.mongo.data.jpa.controller.TenantGenerator).tenant()}Employee")
 public class Employee {
 
     @Id
