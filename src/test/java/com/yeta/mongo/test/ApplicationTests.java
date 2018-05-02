@@ -48,11 +48,6 @@ public class ApplicationTests {
         Employee eee = new Employee();
         e.setFullName("test");
 
-        if (true) {
-            throw new RuntimeException();
-        }
-
-
         template.save(eee,"customercoll");
 
         System.out.println(repo.someMethod("test"));
