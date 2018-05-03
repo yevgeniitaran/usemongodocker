@@ -38,4 +38,9 @@ public class ApplicationTests {
         repo.deleteAll();
     }
 
+    @Test
+    public void mongoTemplateTry() {
+
+    }
+
 }
