@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class HistoryRecordController {
 
-
     @Value("${application.message}")
     String message;
 

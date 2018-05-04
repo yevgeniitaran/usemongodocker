@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Document(collection = "#{T(com.yeta.mongo.data.jpa.controller.CollectionsConfiguration).getCollection()}_history_record")
 public class HistoryRecord {
 
     @Id
