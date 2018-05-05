@@ -1,8 +1,8 @@
 package com.yeta.mongo.test;
 
-import com.yeta.mongo.data.jpa.SampleDataRestApplication;
-import com.yeta.mongo.data.jpa.dao.HistoryRecordMongoTemplate;
-import com.yeta.mongo.data.jpa.domain.HistoryRecord;
+import com.yeta.mongo.SampleDataRestApplication;
+import com.yeta.mongo.dataaccess.HistoryRecordMongoTemplate;
+import com.yeta.mongo.domain.HistoryRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

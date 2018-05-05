@@ -6,17 +6,37 @@
         </Property>
     </Properties>
     <Appenders>
+        <RollingFile name="dataAccess" fileName="logs/dataaccess.log"
+                     filePattern="logs/dataaccess-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="controller" fileName="logs/controller.log"
+                     filePattern="logs/controller-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="com.example.log4j2demo" level="debug" additivity="false">
-            <AppenderRef ref="ConsoleAppender" />
+        <Logger name="com.yeta.mongo.dataaccess" level="debug" additivity="false">
+            <AppenderRef ref="dataAccess" />
         </Logger>
-
         <Root level="info">
             <AppenderRef ref="ConsoleAppender" />
         </Root>
     </Loggers>
+
 </Configuration>

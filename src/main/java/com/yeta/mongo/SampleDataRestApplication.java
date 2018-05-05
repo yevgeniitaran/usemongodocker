@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yeta.mongo.data.jpa;
+package com.yeta.mongo;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

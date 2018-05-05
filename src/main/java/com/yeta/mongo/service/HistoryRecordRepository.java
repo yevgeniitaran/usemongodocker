@@ -1,6 +1,6 @@
-package com.yeta.mongo.data.jpa.service;
+package com.yeta.mongo.service;
 
-import com.yeta.mongo.data.jpa.domain.HistoryRecord;
+import com.yeta.mongo.domain.HistoryRecord;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

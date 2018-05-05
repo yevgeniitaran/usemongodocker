@@ -1,4 +1,4 @@
-package com.yeta.mongo.data.jpa.domain;
+package com.yeta.mongo.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
