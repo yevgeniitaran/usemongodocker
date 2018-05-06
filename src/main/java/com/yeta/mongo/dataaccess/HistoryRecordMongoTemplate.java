@@ -5,7 +5,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class HistoryRecordMongoTemplate {
@@ -35,5 +39,13 @@ public class HistoryRecordMongoTemplate {
 
     public void remove(HistoryRecord historyRecord, String collectionName) {
         mongoTemplate.remove(historyRecord, generateCollectionName(collectionName));
+    }
+
+    public List<HistoryRecord> findByQuery(Query query, String collectionName) {
+        return mongoTemplate.find(query, HistoryRecord.class, generateCollectionName(collectionName));
+    }
+
+    public void insert(Collection<HistoryRecord> collection, String collectionName) {
+        mongoTemplate.insert(collection, collectionName);
     }
 }

@@ -24,11 +24,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SampleDataRestApplication implements ApplicationRunner {
-    private static final Logger LOG = LogManager.getLogger(SampleDataRestApplication.class);
+public class TopHistoryApplication implements ApplicationRunner {
+    private static final Logger LOG = LogManager.getLogger(TopHistoryApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(SampleDataRestApplication.class, args);
+        SpringApplication.run(TopHistoryApplication.class, args);
     }
 
     @Override

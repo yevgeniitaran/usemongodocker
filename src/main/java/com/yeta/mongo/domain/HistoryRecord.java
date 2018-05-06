@@ -1,7 +1,6 @@
 package com.yeta.mongo.domain;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
@@ -11,6 +10,8 @@ public class HistoryRecord {
     private String id;
 
     private Date date;
+
+    private int position;
 
     private String name;
 
@@ -46,5 +47,13 @@ public class HistoryRecord {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }
