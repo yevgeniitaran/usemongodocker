@@ -14,6 +14,7 @@ import java.util.List;
 
 public class RottenTomatoesParser implements AbstractParser {
 
+    public static final String ROTTEN_TOMATOES_TOP100_COLLECTION = "rottentomatoes_top100";
     public static final String ROTTEN_TOMATOES_LINK = "https://www.rottentomatoes.com/";
     public static final String ROTTEN_TOMATOES_FIRST_TOP100_LINK = "https://www.rottentomatoes.com/top/bestofrt/";
 

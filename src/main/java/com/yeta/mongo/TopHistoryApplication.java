@@ -18,25 +18,14 @@ package com.yeta.mongo;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TopHistoryApplication implements ApplicationRunner {
+public class TopHistoryApplication  {
     private static final Logger LOG = LogManager.getLogger(TopHistoryApplication.class);
 
     public static void main(String[] args) {
         SpringApplication.run(TopHistoryApplication.class, args);
-    }
-
-    @Override
-    public void run(ApplicationArguments applicationArguments) {
-        LOG.debug("Debugging log");
-        LOG.info("Info log");
-        LOG.warn("Hey, This is a warning!");
-        LOG.error("Oops! We have an Error. OK");
-        LOG.fatal("Damn! Fatal error. Please fix me.");
     }
 }

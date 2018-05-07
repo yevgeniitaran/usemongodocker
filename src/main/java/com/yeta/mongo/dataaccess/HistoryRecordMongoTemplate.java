@@ -46,6 +46,10 @@ public class HistoryRecordMongoTemplate {
     }
 
     public void insert(Collection<HistoryRecord> collection, String collectionName) {
-        mongoTemplate.insert(collection, collectionName);
+        mongoTemplate.insert(collection, generateCollectionName(collectionName));
+    }
+
+    public Collection<HistoryRecord> findAll(String collectionName) {
+        return mongoTemplate.findAll(HistoryRecord.class, generateCollectionName(collectionName));
     }
 }

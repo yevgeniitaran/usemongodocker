@@ -21,11 +21,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import static com.yeta.mongo.parsers.RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TopHistoryApplication.class)
 public class JsoupSaveDataTest {
-
-    private static final String ROTTEN_TOMATOES_TOP100_COLLECTION = "rottentomatoes_top100";
 
     private HistoryRecordMongoTemplate template;
 
@@ -46,14 +46,14 @@ public class JsoupSaveDataTest {
     }
 
     @Test
-    public void parse_RottenTomatoes_ReturnsHundredRecords() {
+    public void parse_RottenTomatoesParser_ReturnsHundredRecords() {
         RottenTomatoesParser parser = new RottenTomatoesParser();
         Collection<HistoryRecord> result = parser.parse(RottenTomatoesParser.ROTTEN_TOMATOES_FIRST_TOP100_LINK);
         Assert.assertEquals(result.size(), 100);
     }
 
     @Test
-    public void save_Top100Records_successful() {
+    public void insert_Top100Records_successful() {
         RottenTomatoesParser parser = new RottenTomatoesParser();
         Collection<HistoryRecord> top100records = parser.parse(RottenTomatoesParser.ROTTEN_TOMATOES_FIRST_TOP100_LINK);
         template.insert(top100records, ROTTEN_TOMATOES_TOP100_COLLECTION);

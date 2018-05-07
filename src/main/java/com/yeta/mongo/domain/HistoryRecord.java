@@ -1,6 +1,8 @@
 package com.yeta.mongo.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -9,6 +11,8 @@ public class HistoryRecord {
     @Id
     private String id;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
     private Date date;
 
     private int position;
