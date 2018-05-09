@@ -1,10 +1,13 @@
 package com.yeta.mongo.dataaccess;
 
+import com.mongodb.DBObject;
 import com.yeta.mongo.domain.HistoryRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -51,5 +54,9 @@ public class HistoryRecordMongoTemplate {
 
     public Collection<HistoryRecord> findAll(String collectionName) {
         return mongoTemplate.findAll(HistoryRecord.class, generateCollectionName(collectionName));
+    }
+
+    public AggregationResults<DBObject> aggregate(Aggregation aggregation, String collectionName) {
+        return mongoTemplate.aggregate(aggregation, collectionName, DBObject.class);
     }
 }
