@@ -1,18 +1,28 @@
 package com.yeta.mongo.dataaccess;
 
-import com.mongodb.DBObject;
 import com.yeta.mongo.domain.HistoryRecord;
+import com.yeta.mongo.domain.HistoryRecordWithPreviousPosition;
+import com.yeta.mongo.parsers.RottenTomatoesParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.LimitOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 @Repository
 public class HistoryRecordMongoTemplate {
@@ -56,7 +66,26 @@ public class HistoryRecordMongoTemplate {
         return mongoTemplate.findAll(HistoryRecord.class, generateCollectionName(collectionName));
     }
 
-    public AggregationResults<DBObject> aggregate(Aggregation aggregation, String collectionName) {
-        return mongoTemplate.aggregate(aggregation, collectionName, DBObject.class);
+    public AggregationResults<HistoryRecord> aggregate(Aggregation aggregation, String collectionName) {
+        return mongoTemplate.aggregate(aggregation, generateCollectionName(collectionName), HistoryRecord.class);
+    }
+
+    public Collection<HistoryRecordWithPreviousPosition> findRecordWithPreviousPositionForDate(Date date) {
+        SortOperation sortByCount = sort(Sort.Direction.DESC, "date");
+        LimitOperation limitToTop = limit(100);
+        Aggregation aggregation = Aggregation.newAggregation(sortByCount, limitToTop);
+        AggregationResults<HistoryRecord> results = aggregate(aggregation, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
+        List<HistoryRecord> top100records =  results.getMappedResults();
+        List<HistoryRecordWithPreviousPosition> recordWithPreviousPositions = new ArrayList<>();
+
+        for (HistoryRecord historyRecord : top100records) {
+            Query query = new Query(Criteria.where ("date").gt(date.getTime())
+                    .and("name").is(historyRecord.getName()))
+                    .with(new Sort(Sort.Direction.ASC, "date"));
+            List<HistoryRecord> result = findByQuery(query, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
+            HistoryRecordWithPreviousPosition record = new HistoryRecordWithPreviousPosition(historyRecord, result.get(0).getPosition());
+            recordWithPreviousPositions.add(record);
+        }
+        return recordWithPreviousPositions;
     }
 }
