@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
@@ -70,15 +71,17 @@ public class HistoryRecordMongoTemplate {
         return mongoTemplate.aggregate(aggregation, generateCollectionName(collectionName), HistoryRecord.class);
     }
 
-    public Collection<HistoryRecordWithPreviousPosition> findRecordWithPreviousPositionForDate(Date date) {
+    public Collection<HistoryRecord> findTopRecords() {
         SortOperation sortByCount = sort(Sort.Direction.DESC, "date");
         LimitOperation limitToTop = limit(100);
         Aggregation aggregation = Aggregation.newAggregation(sortByCount, limitToTop);
         AggregationResults<HistoryRecord> results = aggregate(aggregation, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
-        List<HistoryRecord> top100records =  results.getMappedResults();
-        List<HistoryRecordWithPreviousPosition> recordWithPreviousPositions = new ArrayList<>();
+        return results.getMappedResults();
+    }
 
-        for (HistoryRecord historyRecord : top100records) {
+    public Collection<HistoryRecordWithPreviousPosition> findTopRecordsPreviousPositions(Date date) {
+        List<HistoryRecordWithPreviousPosition> recordWithPreviousPositions = new ArrayList<>();
+        for (HistoryRecord historyRecord : findTopRecords()) {
             Query query = new Query(Criteria.where ("date").gt(date.getTime())
                     .and("name").is(historyRecord.getName()))
                     .with(new Sort(Sort.Direction.ASC, "date"));
@@ -87,5 +90,22 @@ public class HistoryRecordMongoTemplate {
             recordWithPreviousPositions.add(record);
         }
         return recordWithPreviousPositions;
+    }
+
+    public Collection<HistoryRecord> findRecordsThatLeftTopFromDate(Date date) {
+        Collection<HistoryRecord> topRecords = findTopRecords();
+        Query query = new Query(Criteria.where(("date")).gt(date.getTime()))
+                .with(new Sort(Sort.Direction.ASC,"date"));
+        List<HistoryRecord> allRecordsSinceDate = findByQuery(query, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
+        Collection<String> topNames = topRecords
+                .stream().map(HistoryRecord::getName)
+                .collect(Collectors.toList());
+        Collection<HistoryRecord> result = new ArrayList<>();
+        for (HistoryRecord record : allRecordsSinceDate) {
+            if (!topNames.contains(record.getName())) {
+                result.add(record);
+            }
+        }
+        return result;
     }
 }
