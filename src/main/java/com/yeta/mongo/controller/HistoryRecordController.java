@@ -46,7 +46,7 @@ public class HistoryRecordController {
     public ResponseEntity<Collection<HistoryRecord>> getHistoryRecordsBydate(
             @PathVariable("collectionName") String collectionName, @RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         LOG.debug("Searching for history records on {}", date);
-        Date endDate = DateHelper.getNewDateWithPlusOneDay(date);
+        Date endDate = DateHelper.getNewDateShiftingDay(date, 1);
         Query query = new Query(Criteria.where("date").gte(date).lt(endDate));
         Collection<HistoryRecord> historyRecords = historyRecordMongoTemplate.findByQuery(query, collectionName);
         return new ResponseEntity<>(historyRecords, HttpStatus.OK);

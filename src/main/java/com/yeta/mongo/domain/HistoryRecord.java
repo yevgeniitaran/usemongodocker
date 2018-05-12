@@ -60,4 +60,15 @@ public class HistoryRecord {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    @Override
+    public String toString() {
+        return "HistoryRecord{" +
+                "id='" + id + '\'' +
+                ", date=" + date +
+                ", position=" + position +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

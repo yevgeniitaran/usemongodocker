@@ -5,10 +5,10 @@ import java.util.Date;
 
 public class DateHelper {
 
-    public static Date getNewDateWithPlusOneDay(Date date) {
+    public static Date getNewDateShiftingDay(Date date, int numberOfDays) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.DATE, 1);
+        cal.add(Calendar.DATE, numberOfDays);
         return cal.getTime();
     }
 }

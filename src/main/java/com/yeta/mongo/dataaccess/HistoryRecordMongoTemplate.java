@@ -94,7 +94,7 @@ public class HistoryRecordMongoTemplate {
 
     public Collection<HistoryRecord> findRecordsThatLeftTopFromDate(Date date) {
         Collection<HistoryRecord> topRecords = findTopRecords();
-        Query query = new Query(Criteria.where(("date")).gt(date.getTime()))
+        Query query = new Query(Criteria.where(("date")).gt(date))
                 .with(new Sort(Sort.Direction.ASC,"date"));
         List<HistoryRecord> allRecordsSinceDate = findByQuery(query, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
         Collection<String> topNames = topRecords
