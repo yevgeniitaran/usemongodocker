@@ -2,6 +2,7 @@ package com.yeta.mongo.test;
 
 import com.yeta.mongo.TopHistoryApplication;
 import com.yeta.mongo.dataaccess.HistoryRecordMongoTemplate;
+import com.yeta.mongo.dataaccess.HistoryRecordTemplateFactory;
 import com.yeta.mongo.domain.HistoryRecord;
 import com.yeta.mongo.parsers.RottenTomatoesParser;
 import com.yeta.mongo.utils.DateHelper;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
@@ -28,13 +30,12 @@ public class JsoupSaveDataTest {
 
     private static Logger logger = LogManager.getLogger(JsoupSaveDataTest.class);
 
-    private HistoryRecordMongoTemplate template;
+    private MongoOperations mongoOperations;
 
     @Autowired
-    public void setTemplate(HistoryRecordMongoTemplate template) {
-        this.template = template;
+    public void setHistoryRecordMongoTemplate(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
     }
-
     @Test
     public void connect_Jsoup_Successful() {
         try {
@@ -55,6 +56,7 @@ public class JsoupSaveDataTest {
 
     @Test
     public void insert_Top100Records_successful() {
+        HistoryRecordMongoTemplate template = HistoryRecordTemplateFactory.newInstance(mongoOperations, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
         RottenTomatoesParser parser = new RottenTomatoesParser();
         Collection<HistoryRecord> top100records = parser.parse(RottenTomatoesParser.ROTTEN_TOMATOES_FIRST_TOP100_LINK);
         template.insert(top100records, ROTTEN_TOMATOES_TOP100_COLLECTION);
@@ -62,6 +64,7 @@ public class JsoupSaveDataTest {
 
     @Test
     public void findRecordsThatLeftTopFromDate_PossibleNoData_Successful() {
+        HistoryRecordMongoTemplate template = HistoryRecordTemplateFactory.newInstance(mongoOperations, RottenTomatoesParser.ROTTEN_TOMATOES_TOP100_COLLECTION);
         Date date = DateHelper.getNewDateShiftingDay(new Date(), -5);
         Collection<HistoryRecord> leftTopRecords = template.findRecordsThatLeftTopFromDate(date);
         logger.info("leftTopRecords: {}", leftTopRecords);

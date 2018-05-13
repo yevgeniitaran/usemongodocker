@@ -2,12 +2,14 @@ package com.yeta.mongo.test;
 
 import com.yeta.mongo.TopHistoryApplication;
 import com.yeta.mongo.dataaccess.HistoryRecordMongoTemplate;
+import com.yeta.mongo.dataaccess.HistoryRecordTemplateFactory;
 import com.yeta.mongo.domain.HistoryRecord;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,15 +23,16 @@ public class HistoryRecordMongoTemplateTest {
 
     private static final String TEST_COLLECTION = "test";
 
-    private HistoryRecordMongoTemplate template;
+    private MongoOperations mongoOperations;
 
     @Autowired
-    public void setTemplate(HistoryRecordMongoTemplate template) {
-        this.template = template;
+    public void setHistoryRecordMongoTemplate(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
     }
 
     @Test
     public void insertDelete_HistoryRecord_Complete() {
+        HistoryRecordMongoTemplate template = HistoryRecordTemplateFactory.newInstance(mongoOperations, TEST_COLLECTION);
         HistoryRecord historyRecord = new HistoryRecord();
         historyRecord.setName("Test Record");
         template.insert(historyRecord, TEST_COLLECTION);
@@ -40,6 +43,7 @@ public class HistoryRecordMongoTemplateTest {
 
     @Test
     public void insertFind_DateParam_Complete() {
+        HistoryRecordMongoTemplate template = HistoryRecordTemplateFactory.newInstance(mongoOperations, TEST_COLLECTION);
         Date date = new Date();
         HistoryRecord historyRecord = new HistoryRecord();
         historyRecord.setName("Test Date param");

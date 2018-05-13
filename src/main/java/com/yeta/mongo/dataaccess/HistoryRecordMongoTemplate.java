@@ -5,8 +5,8 @@ import com.yeta.mongo.domain.HistoryRecordWithPreviousPosition;
 import com.yeta.mongo.parsers.RottenTomatoesParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.aggregation.LimitOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,50 +24,50 @@ import java.util.stream.Collectors;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
-@Repository
 public class HistoryRecordMongoTemplate {
 
     private static Logger LOG = LogManager.getLogger(HistoryRecordMongoTemplate.class);
 
     private static final String COLLECTION_NAME_PREFIX = "historyrecord_";
 
-    private MongoTemplate mongoTemplate;
+    private MongoOperations mongoOperations;
+    private String collectionName;
 
-    @Autowired
-    public void setMongoTemplate(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
+    HistoryRecordMongoTemplate(MongoOperations mongoOperations, String collectionName) {
+        this.mongoOperations = mongoOperations;
+        this.collectionName = collectionName;
     }
 
-    protected String generateCollectionName(String collectionName) {
+    private String getCollectionName() {
         return COLLECTION_NAME_PREFIX + collectionName;
     }
 
     public void insert(HistoryRecord historyRecord, String collectionName) {
-        mongoTemplate.insert(historyRecord, generateCollectionName(collectionName));
+        mongoOperations.insert(historyRecord, getCollectionName());
     }
 
     public HistoryRecord findById(String id, String collectionName) {
-        return mongoTemplate.findById(id, HistoryRecord.class, generateCollectionName(collectionName));
+        return mongoOperations.findById(id, HistoryRecord.class, getCollectionName());
     }
 
     public void remove(HistoryRecord historyRecord, String collectionName) {
-        mongoTemplate.remove(historyRecord, generateCollectionName(collectionName));
+        mongoOperations.remove(historyRecord, getCollectionName());
     }
 
     public List<HistoryRecord> findByQuery(Query query, String collectionName) {
-        return mongoTemplate.find(query, HistoryRecord.class, generateCollectionName(collectionName));
+        return mongoOperations.find(query, HistoryRecord.class, getCollectionName());
     }
 
     public void insert(Collection<HistoryRecord> collection, String collectionName) {
-        mongoTemplate.insert(collection, generateCollectionName(collectionName));
+        mongoOperations.insert(collection, getCollectionName());
     }
 
     public Collection<HistoryRecord> findAll(String collectionName) {
-        return mongoTemplate.findAll(HistoryRecord.class, generateCollectionName(collectionName));
+        return mongoOperations.findAll(HistoryRecord.class, getCollectionName());
     }
 
     public AggregationResults<HistoryRecord> aggregate(Aggregation aggregation, String collectionName) {
-        return mongoTemplate.aggregate(aggregation, generateCollectionName(collectionName), HistoryRecord.class);
+        return mongoOperations.aggregate(aggregation, getCollectionName(), HistoryRecord.class);
     }
 
     public Collection<HistoryRecord> findTopRecords() {
