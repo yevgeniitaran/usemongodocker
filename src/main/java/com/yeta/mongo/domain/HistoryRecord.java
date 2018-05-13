@@ -2,6 +2,7 @@ package com.yeta.mongo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -20,6 +21,9 @@ public class HistoryRecord {
     private String name;
 
     private String url;
+
+    @Transient
+    private int previousPosition;
 
     public String getId() {
         return id;
@@ -61,6 +65,14 @@ public class HistoryRecord {
         this.position = position;
     }
 
+    public int getPreviousPosition() {
+        return previousPosition;
+    }
+
+    public void setPreviousPosition(int previousPosition) {
+        this.previousPosition = previousPosition;
+    }
+
     @Override
     public String toString() {
         return "HistoryRecord{" +
@@ -69,6 +81,7 @@ public class HistoryRecord {
                 ", position=" + position +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
+                ", previousPosition=" + previousPosition +
                 '}';
     }
 }

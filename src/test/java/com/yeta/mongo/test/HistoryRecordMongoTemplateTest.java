@@ -35,6 +35,8 @@ public class HistoryRecordMongoTemplateTest {
         HistoryRecordMongoTemplate template = HistoryRecordTemplateFactory.newInstance(mongoOperations, TEST_COLLECTION);
         HistoryRecord historyRecord = new HistoryRecord();
         historyRecord.setName("Test Record");
+        historyRecord.setPosition(1);
+        historyRecord.setPreviousPosition(2);
         template.insert(historyRecord, TEST_COLLECTION);
         historyRecord = template.findById(historyRecord.getId(), TEST_COLLECTION);
         Assert.assertNotNull(historyRecord);

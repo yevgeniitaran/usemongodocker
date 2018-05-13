@@ -46,7 +46,7 @@ public class HistoryRecordController {
     @RequestMapping(
             value = "/api/historyrecords/bydate/{collectionName}",
             method = RequestMethod.GET)
-    public ResponseEntity<Collection<HistoryRecord>> getHistoryRecordsBydate(
+    public ResponseEntity<Collection<HistoryRecord>> getHistoryRecordsByDate(
             @PathVariable("collectionName") String collectionName, @RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         HistoryRecordMongoTemplate historyRecordMongoTemplate = HistoryRecordTemplateFactory.newInstance(mongoOperations, collectionName);
         LOG.debug("Searching for history records on {}", date);
@@ -54,5 +54,16 @@ public class HistoryRecordController {
         Query query = new Query(Criteria.where("date").gte(date).lt(endDate));
         Collection<HistoryRecord> historyRecords = historyRecordMongoTemplate.findByQuery(query, collectionName);
         return new ResponseEntity<>(historyRecords, HttpStatus.OK);
+    }
+
+    @RequestMapping(
+            value="/api/historyrecords/topfromdate/{collectionName}",
+            method = RequestMethod.GET)
+    public ResponseEntity<Collection<HistoryRecord>> getTopChangesFromDate(
+            @PathVariable("collectionName") String collectionName, @RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+        HistoryRecordMongoTemplate historyRecordMongoTemplate = HistoryRecordTemplateFactory.newInstance(mongoOperations, collectionName);
+        Collection<HistoryRecord> result = historyRecordMongoTemplate.findTopRecordsPreviousPositions(date);
+        result.addAll(historyRecordMongoTemplate.findRecordsThatLeftTopFromDate(date));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
